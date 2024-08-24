@@ -66,3 +66,64 @@ body {
   padding: 10px;
   border: ridge 10px hsl(0, 0%, 0%);
 }
+
+/**------ WRAPPER'S CONTENTS [MAIN] ------**/
+
+.calc-buttons,
+.calc-buttons>*,
+.rows,
+.rows .column,
+.column div {
+  display: flex;
+}
+
+.calc-buttons {
+  justify-content: space-around;
+  align-items: center;
+  background-color: hsl(0, 0%, 0%);
+  width: 95%;
+  margin: 0 auto;
+  border: solid .2rem hsl(0, 0%, 0%);
+}
+
+/***------ MAIN'S CONTENTS ------***/
+
+.calc-buttons>* {
+  flex-basis: 100%;
+}
+
+/****------ MAIN'S CONTENTS [NUMBERS CONTAINER] ------****/
+
+.numbers-container {
+  flex-wrap: wrap;
+}
+
+.numbers-container>*,
+.numbers-container .rows button {
+  flex-basis: 100%;
+}
+
+.numbers-container,
+.numbers-container .rows,
+.column,
+.column div {
+  gap: .2rem;
+}
+
+.numbers-container .rows button {
+  border: none;
+  background-color: hsl(255, 2.38%, 67.06%);
+  padding: 25px;
+  font-family: "Lato", Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bolder;
+  font-size: 1rem;
+}
+
+.numbers-container .rows .column {
+  flex-direction: column;
+  width: 100%;
+}
+
+.numbers-container .rows .column-2 {
+  flex-basis: 50%
+}
