@@ -27,22 +27,33 @@ const expressions = {
   expressionTwo: "",
 };
 
-document.addEventListener("keydown", checkTarget);
+let buttons = document.querySelector(".calc-buttons");
 
-function checkTarget(e) {
-  if (e.key in digits) {
-    updateExpression(digits[e.key]);
+document.addEventListener("keydown", getPressedTarget);
+buttons.addEventListener("click", getClickedTarget);
+
+function getPressedTarget(e) {
+  checkTarget(e.key);
+}
+
+function getClickedTarget(e) {
+  checkTarget(e.target.getAttribute("data-key"));
+}
+
+function checkTarget(key) {
+  if (key in digits) {
+    updateExpression(digits[key]);
   }
 
-  if (e.key in operators) {
+  if (key in operators) {
     const mapFunction = {
       Backspace: deleteExpressions(),
       Delete: deleteExpressions(),
       ".": setFloatingPoint(),
+      "+/-": setUnaryOperator(),
+      Clear: isReset(),
     };
 
-    e.key in mapFunction
-      ? mapFunction[e.key]
-      : updateExpression(operators[e.key]);
+    key in mapFunction ? mapFunction[key] : updateExpression(operators[key]);
   }
 }
