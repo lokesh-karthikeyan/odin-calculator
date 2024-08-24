@@ -159,3 +159,18 @@ body {
 .signs-column.column-2 button {
   letter-spacing: 10px;
 }
+
+/**------ WRAPPER'S CONTENTS [FOOTER] ------**/
+
+.page-footer {
+  background: linear-gradient(90deg, #eac99a, #7193d3, #6c6d8e, #f56c2d, #f9596d);
+  margin: 10px auto;
+  width: 95%;
+  background-clip: text;
+  color: transparent;
+  text-align: end;
+  font-family: "Apple II Screen Typeface", "Digital-7 Mono", "Lato", sans-serif;
+  letter-spacing: 5px;
+  font-weight: bolder;
+  font-size: .9rem;
+}
