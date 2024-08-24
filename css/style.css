@@ -22,3 +22,47 @@ html {
   margin: 0;
   padding: 0;
 }
+
+body {
+  background-color: hsl(40, 5.45%, 10.78%);
+  min-height: 100vh;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*------ WRAPPER INSIDE THE BODY ------*/
+
+.wrapper-page {
+  flex-basis: 100%;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.wrapper-page>* {
+  width: 100%;
+}
+
+/**------ WRAPPER'S CONTENTS [HEADER] ------**/
+
+.page-title {
+  background: linear-gradient(45deg, #83a6cf, #9f56bf, #39f252, #3c3cf7, #67cfb2);
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+  letter-spacing: 10px;
+}
+
+/**------ WRAPPER'S CONTENTS [SECTION - 02] ------**/
+
+.display {
+  background-color: hsla(112, 21%, 46%, 1);
+  width: 95%;
+  margin: 20px auto;
+  direction: rtl;
+  font-size: 1.5rem;
+  padding: 10px;
+  border: ridge 10px hsl(0, 0%, 0%);
+}
