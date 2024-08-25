@@ -110,3 +110,37 @@ function checkTarget(key) {
     key in mapFunction ? mapFunction[key] : updateExpression(operators[key]);
   }
 }
+
+function updateExpression(key) {
+  if (key >= 0 && key <= 9) {
+    expressions.expressionOne === "" || expressions.operator === ""
+      ? (proxyForExpressions.expressionOne += key)
+      : (proxyForExpressions.expressionTwo += key);
+  } else if (key === "%" || key === "=") {
+    calculateExpressions();
+  } else {
+    if (
+      expressions.expressionOne !== "" &&
+      expressions.operator !== "" &&
+      expressions.expressionTwo !== ""
+    ) {
+      calculateExpressions();
+    }
+
+    if (expressions.operator === "" || expressions.expressionTwo === "") {
+      proxyForExpressions.operator += key;
+    }
+
+    if (expressions.operator !== "" && expressions.expressionTwo === "") {
+      proxyForExpressions.operator = key;
+    }
+  }
+}
+
+function deleteExpressions() {}
+
+function setFloatingPoint() {}
+
+function setUnaryOperator() {}
+
+function isReset() {}
