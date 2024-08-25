@@ -49,7 +49,7 @@ function displayExpressions() {
     No: () => {
       let context = displayContent.filter((item) => item !== "").join("");
       context.length > 3
-        ? formatNumbers(context)
+        ? (display.textContent = formatNumbers(context))
         : (display.textContent = context);
     },
   };
@@ -57,6 +57,27 @@ function displayExpressions() {
   displayContent.every((item) => item === "")
     ? mapDisplayContext["Yes"]
     : mapDisplayContext["No"]();
+}
+
+function formatNumbers(string) {
+  let displayContext = string.split("");
+  let length = displayContext.length;
+
+  displayContext.splice(length - 3, 0, ",");
+
+  delimiterChecker(displayContext);
+  return displayContext.join("");
+}
+
+function delimiterChecker(array) {
+  let position = array.indexOf(",");
+
+  if (position - 2 <= 0) {
+    return;
+  } else {
+    array.splice(position - 2, 0, ",");
+    delimiterChecker(array);
+  }
 }
 
 let buttons = document.querySelector(".calc-buttons");
