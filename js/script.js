@@ -27,6 +27,15 @@ const expressions = {
   expressionTwo: "",
 };
 
+const proxyHandler = {
+  set(object, key, value) {
+    object[key] = value;
+    displayExpressions();
+  },
+};
+
+const proxyForExpressions = new Proxy(expressions, proxyHandler);
+
 let buttons = document.querySelector(".calc-buttons");
 
 document.addEventListener("keydown", getPressedTarget);
