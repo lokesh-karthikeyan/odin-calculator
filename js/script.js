@@ -44,16 +44,19 @@ function displayExpressions() {
     displayContent.push(expressions[key]);
   }
 
-  if (displayContent.every((item) => item === "")) {
-    display.textContent = "0";
-  } else {
-    let context = displayContent.filter((item) => item !== "").join("");
+  const mapDisplayContext = {
+    Yes: (display.textContent = "0"),
+    No: () => {
+      let context = displayContent.filter((item) => item !== "").join("");
+      context.length > 3
+        ? formatNumbers(context)
+        : (display.textContent = context);
+    },
+  };
 
-    if (context.length > 3) {
-      let context = numberFormat(context);
-    }
-    display.textContent = context;
-  }
+  displayContent.every((item) => item === "")
+    ? mapDisplayContext["Yes"]
+    : mapDisplayContext["No"]();
 }
 
 let buttons = document.querySelector(".calc-buttons");
