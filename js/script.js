@@ -36,6 +36,26 @@ const proxyHandler = {
 
 const proxyForExpressions = new Proxy(expressions, proxyHandler);
 
+function displayExpressions() {
+  let display = document.querySelector(".display h2");
+  let displayContent = [];
+
+  for (let key in expressions) {
+    displayContent.push(expressions[key]);
+  }
+
+  if (displayContent.every((item) => item === "")) {
+    display.textContent = "0";
+  } else {
+    let context = displayContent.filter((item) => item !== "").join("");
+
+    if (context.length > 3) {
+      let context = numberFormat(context);
+    }
+    display.textContent = context;
+  }
+}
+
 let buttons = document.querySelector(".calc-buttons");
 
 document.addEventListener("keydown", getPressedTarget);
