@@ -112,29 +112,54 @@ function checkTarget(key) {
 }
 
 function updateExpression(key) {
-  if (key >= 0 && key <= 9) {
-    expressions.expressionOne === "" || expressions.operator === ""
-      ? (proxyForExpressions.expressionOne += key)
-      : (proxyForExpressions.expressionTwo += key);
-  } else if (key === "%" || key === "=") {
-    calculateExpressions();
-  } else {
-    if (
-      expressions.expressionOne !== "" &&
-      expressions.operator !== "" &&
-      expressions.expressionTwo !== ""
-    ) {
-      calculateExpressions();
-    }
+  let boolKey = digits.hasOwnProperty(key);
+  let expressionsValues = Object.values(expressions);
+  let emptyStringPosition =
+    expressionsValues
+      .map((item, index) => (item === "" ? index : ""))
+      .filter((item) => item !== "")
+      .toString()
+      .split(",")
+      .join("") || "default";
 
-    if (expressions.operator === "" || expressions.expressionTwo === "") {
-      proxyForExpressions.operator += key;
-    }
+  const mapMethods = {
+    true: {
+      "012"() {
+        proxyForExpressions.expressionOne += key;
+      },
+      12() {
+        proxyForExpressions.expressionOne += key;
+      },
+      2() {
+        proxyForExpressions.expressionTwo += key;
+      },
+      default() {
+        proxyForExpressions.expressionTwo += key;
+      },
+    },
+    false: {
+      "012"() {
+        if (key === "-") {
+          isUnary();
+        }
+      },
+      12() {
+        if (key === "%" || key === "=") calculateExpressions();
+        else proxyForExpressions.operator += key;
+      },
+      2() {
+        if (key === "%" || key === "=") calculateExpressions();
+        proxyForExpressions.operator = key;
+      },
+      default() {
+        calculateExpressions();
+      },
+    },
+  };
 
-    if (expressions.operator !== "" && expressions.expressionTwo === "") {
-      proxyForExpressions.operator = key;
-    }
-  }
+  boolKey
+    ? mapMethods[boolKey][emptyStringPosition]()
+    : mapMethods[boolKey][emptyStringPosition]();
 }
 
 function deleteExpressions() {}
