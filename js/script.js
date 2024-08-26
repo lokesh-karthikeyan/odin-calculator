@@ -95,7 +95,7 @@ function getClickedTarget(e) {
 
 function checkTarget(key) {
   if (key in digits) {
-    updateExpression(digits[key]);
+    checkExpressions(digits[key]);
   }
 
   if (key in operators) {
@@ -107,60 +107,171 @@ function checkTarget(key) {
       Clear: isReset(),
     };
 
-    key in mapFunction ? mapFunction[key] : updateExpression(operators[key]);
+    key in mapFunction ? mapFunction[key] : checkExpressions(operators[key]);
   }
 }
 
-function updateExpression(key) {
-  let boolKey = digits.hasOwnProperty(key);
-  let expressionsValues = Object.values(expressions);
-  let emptyStringPosition =
-    expressionsValues
-      .map((item, index) => (item === "" ? index : ""))
+function checkExpressions(key) {
+  let expValues = Object.values(expressions);
+  let notEmptyPositions =
+    expValues
+      .map((item, index) => (item !== "" ? index : ""))
       .filter((item) => item !== "")
       .toString()
       .split(",")
-      .join("") || "default";
+      .join("") || "empty";
 
-  const mapMethods = {
-    true: {
-      "012"() {
-        proxyForExpressions.expressionOne += key;
-      },
-      12() {
-        proxyForExpressions.expressionOne += key;
-      },
-      2() {
-        proxyForExpressions.expressionTwo += key;
-      },
-      default() {
-        proxyForExpressions.expressionTwo += key;
-      },
-    },
-    false: {
-      "012"() {
-        if (key === "-") {
-          isUnary();
-        }
-      },
-      12() {
-        if (key === "%" || key === "=") calculateExpressions();
-        else proxyForExpressions.operator += key;
-      },
-      2() {
-        if (key === "%" || key === "=") calculateExpressions();
-        proxyForExpressions.operator = key;
-      },
-      default() {
-        calculateExpressions();
-      },
-    },
-  };
-
-  boolKey
-    ? mapMethods[boolKey][emptyStringPosition]()
-    : mapMethods[boolKey][emptyStringPosition]();
+  if (key >= 0 && key <= 9) {
+    numericHandler(key, notEmptyPositions);
+  } else {
+    operatorHandler(key, notEmptyPositions);
+  }
 }
+
+function numericHandler(key, index) {
+  let unaryChecker = checkForUnary(key);
+  const mapExpressions = new Map([
+    [
+      "isUnary",
+      {
+        0() {
+          let context = proxyForExpressions.expressionOne;
+          let length = context.length - 1;
+
+          proxyForExpressions.expressionOne =
+            context.slice(0, length) + key + context.slice(length);
+        },
+        "01"() {
+          if (expressions.expressionOne !== "" && expressions.operator != "") {
+            proxyForExpressions.expressionTwo = key;
+          }
+        },
+        "012"() {
+          let context = String(proxyForExpressions.expressionTwo);
+          let length = context.length - 1;
+
+          if (context.includes("(") !== -1) {
+            proxyForExpressions.expressionTwo =
+              context.slice(0, length) + key + context.slice(length);
+          } else {
+            context += key;
+          }
+        },
+      },
+    ],
+    [
+      "notUnary",
+      {
+        empty() {
+          proxyForExpressions.expressionOne += key;
+        },
+        0() {
+          proxyForExpressions.expressionOne += key;
+        },
+        "01"() {
+          proxyForExpressions.expressionTwo += key;
+        },
+        "012"() {
+          proxyForExpressions.expressionTwo += key;
+        },
+      },
+    ],
+  ]);
+  mapExpressions.get(unaryChecker)[index]();
+}
+
+function operatorHandler(key, index) {
+  let unaryChecker = checkForUnary(key);
+
+  const mapExpressions = new Map([
+    [
+      "isUnary",
+      {
+        empty() {
+          proxyForExpressions.expressionOne = "(" + key + ")";
+        },
+        0() {
+          console.log("claire");
+        },
+        "01"() {
+          proxyForExpressions.expressionTwo = "(" + key + ")";
+        },
+        "012"() {
+          calculateExpressions();
+        },
+      },
+    ],
+    [
+      "notUnary",
+      {
+        empty() {
+          proxyForExpressions.expressionOne = "";
+        },
+        0() {
+          if (
+            expressions.expressionOne.includes("(") &&
+            expressions.expressionOne.length <= 3
+          )
+            proxyForExpressions.operator = "";
+          else proxyForExpressions.operator = key;
+        },
+        "01"() {
+          let operator = proxyForExpressions.operator;
+          if (operator === "-" && key === "-")
+            proxyForExpressions.expressionTwo = "(" + key + ")";
+          else proxyForExpressions.operator = key;
+        },
+        "012"() {
+          calculateExpressions();
+        },
+      },
+    ],
+  ]);
+
+  mapExpressions.get(unaryChecker)[index]();
+}
+
+function checkForUnary(key) {
+  let value = key;
+
+  if (key >= 0 && key <= 9) {
+    value = "digit";
+  }
+
+  const checkUnary = new Map([
+    [
+      "-",
+      () => {
+        if (expressions.expressionOne === "") return "isUnary";
+        if (expressions.operator === "-" && expressions.expressionTwo === "")
+          return "isUnary";
+        if (expressions.operator !== "-" && value === "-") return "notUnary";
+        if (
+          expressions.operator === "-" &&
+          expressions.expressionTwo.includes("(")
+        )
+          return "isUnary";
+        if (expressions.expressionOne.includes("(")) return "isUnary";
+      },
+    ],
+    [
+      "digit",
+      () => {
+        if (
+          expressions.expressionOne.includes("(") ||
+          expressions.expressionTwo.includes("(")
+        )
+          return "isUnary";
+        else return "notUnary";
+      },
+    ],
+  ]);
+
+  let result = checkUnary.get(value) ? checkUnary.get(value)() : "notUnary";
+  return result;
+}
+
+function calculateExpressions() {}
 
 function deleteExpressions() {}
 
