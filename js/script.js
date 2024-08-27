@@ -21,78 +21,20 @@ const operators = {
   "=": "=",
 };
 
-const expressions = {
-  expressionOne: "",
-  operator: "",
-  expressionTwo: "",
-};
-
-const proxyHandler = {
-  set(object, key, value) {
-    object[key] = value;
-    completeExpressionss();
-    displayExpressions();
-  },
-};
-
-const proxyForExpressions = new Proxy(expressions, proxyHandler);
-
-function completeExpressionss() {
-  let expressionValues = [
-    ...(proxyForExpressions.expressionOne +
-      proxyForExpressions.operator +
-      proxyForExpressions.expressionTwo),
-  ];
-  return expressionValues;
-}
-
-function arrayToString(array) {
-  return array.map((item) => item.split(""));
-}
-
-function displayExpressions() {
-  let display = document.querySelector(".display h2");
-  let completeExpressions = Object.values(expressions);
-
-  const addDisplayContext = {
-    Yes: (display.textContent = "0"),
-
-    No() {
-      // let context = completeExpressions
-      //   .filter((item) => item !== "")
-      //   .join("")
-      //   .split("");
-
-      formatNumbers();
-      display.textContent = completeExpressionss().join("");
-    },
-  };
-  console.log(completeExpressionss());
-  completeExpressions.every((item) => item === "")
-    ? addDisplayContext["Yes"]
-    : addDisplayContext["No"]();
-
-  // console.log(completeExpressions);
-  // let output = formatNumbers([...completeExpressions]);
-  // console.log(`output ${output}`);
-  // display.textContent = output;
-}
+const expressions = new Map([
+  ["leftOperand", []],
+  ["operator", []],
+  ["rightOperand", []],
+]);
 
 function checkExpressions(key) {
-  let operandOne = proxyForExpressions.expressionOne;
-  let sign = proxyForExpressions.operator;
-  let operandTwo = proxyForExpressions.expressionTwo;
+  let operandOne = expressions.get("leftOperand");
+  let sign = expressions.get("operator");
+  let operandTwo = expressions.get("rightOperand");
 
-  let operandOneLength;
-  let signLength;
-  let operandTwoLength;
-
-  if (operandOne.length > 0) operandOneLength = "1";
-  else operandOneLength = "0";
-  if (sign.length > 0) signLength = "1";
-  else signLength = "0";
-  if (operandTwo.length > 0) operandTwoLength = "1";
-  else operandTwoLength = "0";
+  let operandOneLength = operandOne.length > 0 ? "1" : "0";
+  let signLength = sign.length > 0 ? "1" : "0";
+  let operandTwoLength = operandTwo.length > 0 ? "1" : "0";
 
   let positions = operandOneLength + signLength + operandTwoLength;
 
@@ -103,29 +45,9 @@ function checkExpressions(key) {
   }
 }
 
-function numericHandler(key, positionCode) {
-  const mapMethods = {
-    operandOne() {
-      proxyForExpressions.expressionOne += key;
-    },
-    sign() {
-      proxyForExpressions.operator += key;
-    },
-    operandTwo() {
-      proxyForExpressions.expressionTwo += key;
-    },
-  };
-
-  const mapExpressions = {
-    "000"() {
-      mapMethods["operandOne"]();
-    },
-    100() {
-      mapMethods["operandOne"]();
-    },
-  };
-
-  mapExpressions[positionCode]();
+function numericHandler(key, code) {
+  console.log(key);
+  console.log(code);
 }
 
 let buttons = document.querySelector(".calc-buttons");
