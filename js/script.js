@@ -72,10 +72,6 @@ function checkTarget(key) {
   mapFunction[key]?.();
 }
 
-function isReset() {
-  console.log("Hi");
-}
-
 function checkExpressions(key) {
   let operandOneLength = expressions.get("leftOperand").length > 0 ? "1" : "0";
   let signLength = expressions.get("operator").length > 0 ? "1" : "0";
@@ -439,4 +435,11 @@ function setUnaryMode(element) {
     : mapParantheses["leftAndRight"]();
 }
 
-// function isReset() {}
+function isReset() {
+  expressions.set("leftOperand", []);
+  expressions.set("operator", []);
+  expressions.set("rightOperand", []);
+  unaryModes = [];
+
+  showExpression();
+}
