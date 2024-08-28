@@ -371,8 +371,14 @@ function toggleParantheses() {
       },
     },
     1: {
-      1() {
+      0() {
         unaryModes.push("right");
+      },
+      1() {
+        if (unaryModes.includes("right")) {
+          let index = unaryModes.indexOf("right");
+          unaryModes.splice(index, 1);
+        } else unaryModes.push("right");
       },
       2() {
         let index = unaryModes.indexOf("right");
@@ -380,8 +386,7 @@ function toggleParantheses() {
       },
     },
   };
-  console.log(operatorLength);
-  console.log(length);
+
   mapParantheses[operatorLength][length]();
   showExpression();
 }
