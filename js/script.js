@@ -309,7 +309,36 @@ function showExpression() {
 
 function calculateExpressions() {}
 
-function deleteExpressions() {}
+function deleteExpressions() {
+  let leftOperand = expressions.get("leftOperand");
+  let sign = expressions.get("operator");
+  let rightOperand = expressions.get("rightOperand");
+
+  if (rightOperand.length > 0) {
+    rightOperand.pop();
+  } else if (sign.length > 0) {
+    sign.pop();
+  } else {
+    leftOperand.pop();
+  }
+
+  if (rightOperand.length === 0) {
+    console.log(unaryModes);
+    if (unaryModes.includes("right")) {
+      let index = unaryModes.indexOf("right");
+      unaryModes.splice(index, 1);
+    }
+  }
+
+  if (leftOperand.length === 0) {
+    if (unaryModes.includes("left")) {
+      let index = unaryModes.indexOf("left");
+      unaryModes.splice(index, 1);
+    }
+  }
+
+  showExpression();
+}
 
 function setFloatingPoint() {
   let leftOperand = expressions.get("leftOperand");
@@ -351,7 +380,8 @@ function toggleParantheses() {
       },
     },
   };
-
+  console.log(operatorLength);
+  console.log(length);
   mapParantheses[operatorLength][length]();
   showExpression();
 }
