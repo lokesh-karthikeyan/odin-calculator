@@ -71,107 +71,74 @@ function checkExpressions(key) {
     setOperatorExpression(key, positions);
   }
 
-  checkDelimiter(
-    expressions.get("leftOperand"),
-    expressions.get("rightOperand"),
-  );
-
+  updateFormattedExpression();
   showExpression();
 }
 
-function setNumericExpression(key, code) {
+function updateFormattedExpression() {
   let leftOperand = expressions.get("leftOperand");
-  let operator = expressions.get("operator");
   let rightOperand = expressions.get("rightOperand");
-  const mapExpressions = {
-    "000"() {
-      leftOperand.push(key);
-    },
-    100() {
-      leftOperand.push(key);
-    },
-  };
 
-  mapExpressions[code]();
-
-  // console.log(expressions.get("leftOperand"));
-}
-
-function setOperatorExpression(key, code) {}
-
-function checkDelimiter(leftOperand, rightOperand) {
-  let unaryCheckLeftOperand;
-  let unaryCheckRightOperand;
-
-  unaryCheckLeftOperand = leftOperand.includes("(") ? "true" : "false";
-  unaryCheckRightOperand = rightOperand.includes("(") ? "true" : "false";
-
-  let leftOperandFiltered = leftOperand.filter(
-    (item) => (item >= 0 && item <= 9) || item === ".",
-  );
-  let rightOperandFiltered = rightOperand.filter(
-    (item) => (item >= 0 && item <= 9) || item === ".",
-  );
-  if (leftOperandFiltered.length > 3)
-    updateDelimiterExpressions(leftOperandFiltered, unaryCheckLeftOperand);
-  if (rightOperandFiltered.length > 3)
-    updateDelimiterExpressions(rightOperandFiltered, unaryCheckRightOperand);
-}
-
-function updateDelimiterExpressions(expression, isUnary) {
-  let periodCheck = expression.includes(".");
-  let formattedOutput;
-
-  const mapDelimiter = {
-    false: {
-      false() {
-        formattedOutput = addDelimiter(expression);
+  const mapMethods = {
+    expressionOne: {
+      noParantheses() {
+        leftOperand = filterExpressions(leftOperand);
+        expressions.set("leftOperand", leftOperand);
       },
-      true() {
-        formattedOutput = addDelimiter(expression);
-        formattedOutput.unshift("(", "-");
-        formattedOutput.push(")");
+      hasParantheses() {
+        leftOperand = filterExpressions(leftOperand);
+        leftOperand.unshift("(", "-");
+        leftOperand.push(")");
+        expressions.set("leftOperand", leftOperand);
       },
     },
-
-    true: {
-      false() {
-        let index = expression.indexOf(".");
-        let partInteger = expression.slice(0, index);
-        let partFractional = expression.slice(index + 1);
-
-        let formattedInteger = addDelimiter(partInteger, isUnary);
-        let formattedFractional = addDelimiter(partFractional, isUnary);
-
-        formattedInteger.push(".");
-
-        formattedOutput = formattedInteger.concat(formattedFractional);
+    expressionTwo: {
+      noParantheses() {
+        rightOperand = filterExpressions(rightOperand);
+        expressions.set("rightOperand", rightOperand);
       },
-      true() {
-        let index = expression.indexOf(".");
-        let partInteger = expression.slice(0, index);
-        let partFractional = expression.slice(index + 1);
-
-        let formattedInteger = addDelimiter(partInteger, isUnary);
-        let formattedFractional = addDelimiter(partFractional, isUnary);
-
-        formattedInteger.push(".");
-
-        formattedOutput = formattedInteger.concat(formattedFractional);
-        formattedOutput.unshift("(", "-");
-        formattedOutput.push(")");
+      hasParantheses() {
+        rightOperand = filterExpressions(rightOperand);
+        rightOperand.unshift("(", "-");
+        rightOperand.push(")");
+        expressions.set("rightOperand", rightOperand);
       },
     },
   };
 
-  mapDelimiter[periodCheck][isUnary]();
+  let paranthesesStatus = isUnary(leftOperand);
 
-  if (expressions.get("rightOperand").length === 0) {
-    expressions.set("leftOperand", formattedOutput);
+  mapMethods["expressionOne"][paranthesesStatus]();
+  mapMethods["expressionTwo"][paranthesesStatus]();
+}
+
+function isUnary(expression) {
+  return expression.includes("(") ? "hasParantheses" : "noParantheses";
+}
+
+function filterExpressions(expression) {
+  let filteredNumbers = expression.filter(
+    (item) => (item >= 0 && item <= 9) || item === ".",
+  );
+
+  if (filteredNumbers.includes(".")) {
+    let index = filteredNumbers.indexOf(".");
+    let partInteger = filteredNumbers.slice(0, index);
+    let partFractional = filteredNumbers.slice(index + 1);
+
+    let formattedInteger = addDelimiter(partInteger);
+    let formattedFractional = addDelimiter(partFractional);
+
+    formattedInteger.push(".");
+
+    let formattedExpression = formattedInteger.concat(formattedFractional);
+
+    return formattedExpression;
   }
-  if (expressions.get("operator").length > 0) {
-    expressions.set("rightOperand", formattedOutput);
-  }
+
+  let formattedExpression = addDelimiter(filteredNumbers);
+
+  return formattedExpression;
 }
 
 function addDelimiter(expression) {
@@ -192,6 +159,61 @@ function addDelimiter(expression) {
   return slicedExpression;
 }
 
+function setNumericExpression(key, code) {
+  let leftOperand = expressions.get("leftOperand");
+  let operator = expressions.get("operator");
+  let rightOperand = expressions.get("rightOperand");
+
+  console.log(code);
+
+  const mapExpressions = {
+    "000"() {
+      leftOperand.push(key);
+    },
+    100() {
+      leftOperand.push(key);
+    },
+    110() {
+      rightOperand.push(key);
+    },
+    111() {
+      rightOperand.push(key);
+    },
+  };
+
+  mapExpressions[code]();
+
+  // console.log(expressions.get("leftOperand"));
+}
+
+function setOperatorExpression(key, code) {
+  let leftOperand = expressions.get("leftOperand");
+  let operator = expressions.get("operator");
+  let rightOperand = expressions.get("rightOperand");
+
+  let normalOperators = ["+", "*", "/", "^"];
+
+  let normalSign = normalOperators.includes(key) ? "true" : "false";
+
+  console.log(normalSign);
+  console.log(code);
+  const mapExpressions = {
+    true: {
+      "000"() {
+        leftOperand = "[]";
+      },
+      100() {
+        operator.push(key);
+      },
+      110() {
+        operator.splice(length - 1, 1, key);
+      },
+    },
+  };
+
+  mapExpressions[normalSign][code]();
+}
+
 function showExpression() {
   let display = document.querySelector(".display h2");
 
@@ -199,8 +221,6 @@ function showExpression() {
   let sign = expressions.get("operator");
   let rightOperand = expressions.get("rightOperand");
 
-  let context = leftOperand;
-  console.log(context);
   if (leftOperand.length === 0 && sign.length === 0) {
     display.textContent = "0";
   } else {
@@ -215,6 +235,19 @@ function deleteExpressions() {}
 
 function setFloatingPoint() {}
 
-function setUnaryOperator() {}
+function setUnaryOperator() {
+  // let leftOperand = expressions.get("leftOperand");
+  // let sign = expressions.get("operator");
+  // let rightOperand = expressions.get("rightOperand");
+  //
+  // if (sign.length === 0) {
+  //   leftOperand.unshift("(", "-");
+  //   leftOperand.push(")");
+  // }
+  // if (sign.length !== 0) {
+  //   rightOperand.unshift(("(", "-"));
+  //   rightOperand.push(")");
+  // }
+}
 
 function isReset() {}
