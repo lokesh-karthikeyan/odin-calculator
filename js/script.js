@@ -27,6 +27,8 @@ const expressions = new Map([
   ["rightOperand", []],
 ]);
 
+let unaryModes = [];
+
 let buttons = document.querySelector(".calc-buttons");
 
 document.addEventListener("keydown", getPressedTarget);
@@ -87,8 +89,6 @@ function updateFormattedExpression() {
       },
       hasParantheses() {
         leftOperand = filterExpressions(leftOperand);
-        leftOperand.unshift("(", "-");
-        leftOperand.push(")");
         expressions.set("leftOperand", leftOperand);
       },
     },
@@ -99,8 +99,6 @@ function updateFormattedExpression() {
       },
       hasParantheses() {
         rightOperand = filterExpressions(rightOperand);
-        rightOperand.unshift("(", "-");
-        rightOperand.push(")");
         expressions.set("rightOperand", rightOperand);
       },
     },
@@ -163,25 +161,34 @@ function setNumericExpression(key, code) {
   let leftOperand = expressions.get("leftOperand");
   let operator = expressions.get("operator");
   let rightOperand = expressions.get("rightOperand");
+  let unaryCheck;
 
-  console.log(code);
+  unaryCheck =
+    leftOperand.includes("(") || rightOperand.includes("(") ? "true" : "false";
 
   const mapExpressions = {
-    "000"() {
-      leftOperand.push(key);
+    false: {
+      "000"() {
+        leftOperand.push(key);
+      },
+      100() {
+        leftOperand.push(key);
+      },
+      110() {
+        rightOperand.push(key);
+      },
+      111() {
+        rightOperand.push(key);
+      },
     },
-    100() {
-      leftOperand.push(key);
-    },
-    110() {
-      rightOperand.push(key);
-    },
-    111() {
-      rightOperand.push(key);
+    true: {
+      100() {
+        leftOperand.splice(length - 1, 0, key);
+      },
     },
   };
 
-  mapExpressions[code]();
+  mapExpressions[unaryCheck][code]();
 
   // console.log(expressions.get("leftOperand"));
 }
@@ -190,32 +197,87 @@ function setOperatorExpression(key, code) {
   let leftOperand = expressions.get("leftOperand");
   let operator = expressions.get("operator");
   let rightOperand = expressions.get("rightOperand");
-
   let normalOperators = ["+", "*", "/", "^"];
+  let signIdentifier = normalOperators.includes(key)
+    ? "normalOperators"
+    : "specialOperators";
+  let unaryCheck;
 
-  let normalSign = normalOperators.includes(key) ? "true" : "false";
-
-  console.log(normalSign);
-  console.log(code);
   const mapExpressions = {
-    true: {
-      "000"() {
+    "000": {
+      normalOperators() {
         leftOperand = "[]";
       },
-      100() {
+      specialOperators: {
+        "-"() {
+          unaryModes.push("left");
+        },
+        "%"() {
+          leftOperand = "[]";
+        },
+        "="() {
+          leftOperand = "[]";
+        },
+      },
+    },
+    100: {
+      normalOperators() {
         operator.push(key);
       },
-      110() {
-        operator.splice(length - 1, 1, key);
+      specialOperators: {
+        "-"() {
+          operator.push(key);
+        },
+        "%"() {
+          operator.push(key);
+          calculateExpressions();
+        },
+        "="() {
+          operator.push(key);
+          calculateExpressions();
+        },
+      },
+    },
+    110: {
+      normalOperators() {
+        if (!unaryModes.includes("right")) operator.splice(length - 1, 1, key);
+      },
+      specialOperators: {
+        "-"() {
+          let currentOperator = operator[operator.length - 1];
+
+          if (currentOperator === "-") unaryModes.push("right");
+          if (!unaryModes.includes("right"))
+            operator.splice(length - 1, 1, key);
+        },
+        "%"() {
+          if (!unaryModes.includes("right"))
+            operator.splice(length - 1, 1, key);
+          calculateExpressions();
+        },
+        "="() {
+          if (!unaryModes.includes("right"))
+            operator.splice(length - 1, 1, key);
+          calculateExpressions();
+        },
       },
     },
   };
-
-  mapExpressions[normalSign][code]();
+  console.log(code);
+  signIdentifier === "normalOperators"
+    ? mapExpressions[code][signIdentifier]()
+    : mapExpressions[code][signIdentifier][key]();
+  // mapExpressions[key][unaryCheck][code]();
 }
 
 function showExpression() {
   let display = document.querySelector(".display h2");
+
+  if (unaryModes.length > 0) {
+    setUnaryMode(display);
+    removeDuplicates();
+    return;
+  }
 
   let leftOperand = expressions.get("leftOperand");
   let sign = expressions.get("operator");
@@ -235,19 +297,54 @@ function deleteExpressions() {}
 
 function setFloatingPoint() {}
 
-function setUnaryOperator() {
-  // let leftOperand = expressions.get("leftOperand");
-  // let sign = expressions.get("operator");
-  // let rightOperand = expressions.get("rightOperand");
-  //
-  // if (sign.length === 0) {
-  //   leftOperand.unshift("(", "-");
-  //   leftOperand.push(")");
-  // }
-  // if (sign.length !== 0) {
-  //   rightOperand.unshift(("(", "-"));
-  //   rightOperand.push(")");
-  // }
+function setUnaryOperator() {}
+
+function removeDuplicates() {
+  unaryModes = [...new Set(unaryModes)];
+}
+
+function setUnaryMode(element) {
+  console.log(unaryModes);
+
+  const mapParantheses = {
+    left() {
+      element.textContent =
+        "(-" +
+        expressions.get("leftOperand").join("") +
+        ")" +
+        " " +
+        expressions.get("operator").join("") +
+        " " +
+        expressions.get("rightOperand").join("");
+    },
+    right() {
+      element.textContent =
+        expressions.get("leftOperand").join("") +
+        " " +
+        expressions.get("operator").join("") +
+        " " +
+        "(-" +
+        expressions.get("rightOperand").join("") +
+        ")";
+    },
+    leftAndRight() {
+      element.textContent =
+        "(-" +
+        expressions.get("leftOperand").join("") +
+        ")" +
+        " " +
+        expressions.get("operator").join("") +
+        " " +
+        "(-" +
+        expressions.get("rightOperand").join("") +
+        ")";
+    },
+  };
+
+  let length = unaryModes.length;
+  length === 1
+    ? mapParantheses[unaryModes[0]]()
+    : mapParantheses["leftAndRight"]();
 }
 
 function isReset() {}
