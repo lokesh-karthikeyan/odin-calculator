@@ -311,7 +311,21 @@ function calculateExpressions() {}
 
 function deleteExpressions() {}
 
-function setFloatingPoint() {}
+function setFloatingPoint() {
+  let leftOperand = expressions.get("leftOperand");
+  let rightOperand = expressions.get("rightOperand");
+  let sign = expressions.get("operator").length;
+
+  if (sign === 0) {
+    if (leftOperand.includes(".")) return;
+    leftOperand.push(".");
+  }
+  if (sign === 1) {
+    if (rightOperand.includes(".")) return;
+    rightOperand.push(".");
+  }
+  showExpression();
+}
 
 function toggleParantheses() {
   let length = unaryModes.length;
