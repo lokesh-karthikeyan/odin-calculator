@@ -48,16 +48,32 @@ function checkTarget(key) {
   }
 
   if (key in operators) {
-    const mapFunction = {
-      Backspace: deleteExpressions(),
-      Delete: deleteExpressions(),
-      ".": setFloatingPoint(),
-      "+/-": setUnaryOperator(),
-      Clear: isReset(),
-    };
-
-    key in mapFunction ? mapFunction[key] : checkExpressions(operators[key]);
+    checkExpressions(operators[key]);
   }
+
+  const mapFunction = {
+    Backspace() {
+      deleteExpressions();
+    },
+    Delete() {
+      deleteExpressions();
+    },
+    "."() {
+      setFloatingPoint();
+    },
+    "+/-"() {
+      toggleParantheses();
+    },
+    Clear() {
+      isReset();
+    },
+  };
+  // console.log(mapFunction.hasOwnProperty(key));
+  mapFunction[key]?.();
+}
+
+function isReset() {
+  console.log("Hi");
 }
 
 function checkExpressions(key) {
@@ -263,7 +279,7 @@ function setOperatorExpression(key, code) {
       },
     },
   };
-  console.log(code);
+  // console.log(code);
   signIdentifier === "normalOperators"
     ? mapExpressions[code][signIdentifier]()
     : mapExpressions[code][signIdentifier][key]();
@@ -274,8 +290,8 @@ function showExpression() {
   let display = document.querySelector(".display h2");
 
   if (unaryModes.length > 0) {
-    setUnaryMode(display);
     removeDuplicates();
+    setUnaryMode(display);
     return;
   }
 
@@ -297,14 +313,41 @@ function deleteExpressions() {}
 
 function setFloatingPoint() {}
 
-function setUnaryOperator() {}
+function toggleParantheses() {
+  let length = unaryModes.length;
+  let operatorLength = expressions.get("operator").length;
+
+  const mapParantheses = {
+    0: {
+      0() {
+        unaryModes.push("left");
+      },
+      1() {
+        let index = unaryModes.indexOf("left");
+        unaryModes.splice(index, 1);
+      },
+    },
+    1: {
+      1() {
+        unaryModes.push("right");
+      },
+      2() {
+        let index = unaryModes.indexOf("right");
+        unaryModes.splice(index, 1);
+      },
+    },
+  };
+
+  mapParantheses[operatorLength][length]();
+  showExpression();
+}
 
 function removeDuplicates() {
   unaryModes = [...new Set(unaryModes)];
 }
 
 function setUnaryMode(element) {
-  console.log(unaryModes);
+  // console.log(unaryModes);
 
   const mapParantheses = {
     left() {
@@ -347,4 +390,4 @@ function setUnaryMode(element) {
     : mapParantheses["leftAndRight"]();
 }
 
-function isReset() {}
+// function isReset() {}
