@@ -343,9 +343,35 @@ function calculateExpressions() {
     "^": () => powerOf(expressionOne, expressionTwo),
   };
 
-  let longResult = BigInt(calculation[sign]);
+  let longResult = calculation[sign]();
   let shortResult = Number(longResult);
+  console.log(longResult);
+  console.log(shortResult);
   showExpression();
+}
+
+function addition(operandOne, operandTwo) {
+  return operandOne + operandTwo;
+}
+
+function subtraction(operandOne, operandTwo) {
+  return operandOne - operandTwo;
+}
+
+function multiplication(operandOne, operandTwo) {
+  return operandOne * operandTwo;
+}
+
+function division(dividend, divisor) {
+  return divisor !== 0n ? dividend / divisor : "Error";
+}
+
+function powerOf(base, power) {
+  return base ** power;
+}
+
+function inPercentage(value) {
+  return (value * 1) / 100;
 }
 
 function deleteExpressions() {
