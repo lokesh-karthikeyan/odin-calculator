@@ -330,6 +330,12 @@ function calculateExpressions(key) {
   let expressionOne = leftOperand.filter((item) => item !== ",").join("");
   let expressionTwo = rightOperand.filter((item) => item !== ",").join("");
 
+  if (unaryModes.includes("left") && unaryModes.includes("right")) {
+    expressionOne = "-" + expressionOne;
+    expressionTwo = "-" + expressionTwo;
+  } else if (unaryModes.includes("left")) expressionOne = "-" + expressionOne;
+  else expressionTwo = "-" + expressionTwo;
+
   if (Number.isInteger(expressionOne) && Number.isInteger(expressionTwo)) {
     expressionOne = BigInt(expressionOne);
     expressionTwo = BigInt(expressionTwo);
@@ -355,7 +361,7 @@ function calculateExpressions(key) {
 }
 
 function addition(operandOne, operandTwo) {
-  return operandOne + operandTwo;
+  return Number(operandOne) + Number(operandTwo);
 }
 
 function subtraction(operandOne, operandTwo) {
@@ -380,8 +386,13 @@ function inPercentage(value) {
 
 function calculationCompleted(expression, key) {
   let formattedOutput = filterExpressions(expression);
-
   let nextOperator = expressions.get("operator");
+
+  if (expression.includes("-")) unaryModes = ["left"];
+  if (unaryModes.length > 0 && unaryModes.includes("right")) {
+    let index = unaryModes.indexOf("right");
+    unaryModes.splice(index, 1);
+  }
 
   expressions.set("leftOperand", formattedOutput);
   key !== "="
