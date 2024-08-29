@@ -274,6 +274,22 @@ function setOperatorExpression(key, code) {
         },
       },
     },
+    111: {
+      normalOperators() {
+        calculateExpressions();
+      },
+      specialOperators: {
+        "-"() {
+          calculateExpressions();
+        },
+        "%"() {
+          calculateExpressions();
+        },
+        "="() {
+          calculateExpressions();
+        },
+      },
+    },
   };
   // console.log(code);
   signIdentifier === "normalOperators"
@@ -303,7 +319,34 @@ function showExpression() {
   }
 }
 
-function calculateExpressions() {}
+function calculateExpressions() {
+  let leftOperand = expressions.get("leftOperand");
+  let sign = expressions.get("operator");
+  let rightOperand = expressions.get("rightOperand");
+
+  if (sign.includes("%")) inPercentage();
+  let expressionOne = BigInt(
+    leftOperand.filter((item) => item !== ",").join(""),
+  );
+  let expressionTwo = BigInt(
+    rightOperand.filter((item) => item !== ",").join(""),
+  );
+
+  // let longResult = BigInt(expressionOne * expressionTwo).toString();
+  // let shortResult = Number(longResult);
+
+  const calculation = {
+    "+": () => addition(expressionOne, expressionTwo),
+    "-": () => subtraction(expressionOne, expressionTwo),
+    "*": () => multiplication(expressionOne, expressionTwo),
+    "/": () => division(expressionOne, expressionTwo),
+    "^": () => powerOf(expressionOne, expressionTwo),
+  };
+
+  let longResult = BigInt(calculation[sign]);
+  let shortResult = Number(longResult);
+  showExpression();
+}
 
 function deleteExpressions() {
   let leftOperand = expressions.get("leftOperand");
