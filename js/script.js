@@ -242,11 +242,12 @@ function setOperatorExpression(key, code) {
         },
         "%"() {
           operator.push(key);
-          calculateExpressions();
+          calculateExpressions(key);
         },
         "="() {
-          operator.push(key);
-          calculateExpressions();
+          operator = "[]";
+          // operator.push(key);
+          // calculateExpressions(key);
         },
       },
     },
@@ -265,28 +266,28 @@ function setOperatorExpression(key, code) {
         "%"() {
           if (!unaryModes.includes("right"))
             operator.splice(length - 1, 1, key);
-          calculateExpressions();
+          calculateExpressions(key);
         },
         "="() {
           if (!unaryModes.includes("right"))
             operator.splice(length - 1, 1, key);
-          calculateExpressions();
+          calculateExpressions(key);
         },
       },
     },
     111: {
       normalOperators() {
-        calculateExpressions();
+        calculateExpressions(key);
       },
       specialOperators: {
         "-"() {
-          calculateExpressions();
+          calculateExpressions(key);
         },
         "%"() {
-          calculateExpressions();
+          calculateExpressions(key);
         },
         "="() {
-          calculateExpressions();
+          calculateExpressions(key);
         },
       },
     },
@@ -319,7 +320,7 @@ function showExpression() {
   }
 }
 
-function calculateExpressions() {
+function calculateExpressions(key) {
   let leftOperand = expressions.get("leftOperand");
   let sign = expressions.get("operator");
   let rightOperand = expressions.get("rightOperand");
@@ -346,7 +347,8 @@ function calculateExpressions() {
   let longResult = calculation[sign]();
   let shortResult = Number(longResult);
   console.log(longResult);
-  console.log(shortResult);
+  console.log(shortResult.toString().split(""));
+  calculationCompleted(shortResult.toString().split(""), key);
   showExpression();
 }
 
@@ -372,6 +374,18 @@ function powerOf(base, power) {
 
 function inPercentage(value) {
   return (value * 1) / 100;
+}
+
+function calculationCompleted(expression, key) {
+  let formattedOutput = filterExpressions(expression);
+
+  let nextOperator = expressions.get("operator");
+
+  expressions.set("leftOperand", formattedOutput);
+  key !== "="
+    ? nextOperator.splice(nextOperator.length - 1, 1, key)
+    : nextOperator.splice(nextOperator.length - 1, 1);
+  expressions.set("rightOperand", []);
 }
 
 function deleteExpressions() {
