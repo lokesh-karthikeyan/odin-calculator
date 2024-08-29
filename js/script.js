@@ -326,15 +326,14 @@ function calculateExpressions(key) {
   let rightOperand = expressions.get("rightOperand");
 
   if (sign.includes("%")) inPercentage();
-  let expressionOne = BigInt(
-    leftOperand.filter((item) => item !== ",").join(""),
-  );
-  let expressionTwo = BigInt(
-    rightOperand.filter((item) => item !== ",").join(""),
-  );
 
-  // let longResult = BigInt(expressionOne * expressionTwo).toString();
-  // let shortResult = Number(longResult);
+  let expressionOne = leftOperand.filter((item) => item !== ",").join("");
+  let expressionTwo = rightOperand.filter((item) => item !== ",").join("");
+
+  if (Number.isInteger(expressionOne) && Number.isInteger(expressionTwo)) {
+    expressionOne = BigInt(expressionOne);
+    expressionTwo = BigInt(expressionTwo);
+  }
 
   const calculation = {
     "+": () => addition(expressionOne, expressionTwo),
@@ -346,8 +345,11 @@ function calculateExpressions(key) {
 
   let longResult = calculation[sign]();
   let shortResult = Number(longResult);
-  console.log(longResult);
-  console.log(shortResult.toString().split(""));
+
+  shortResult = Number.isInteger(shortResult)
+    ? shortResult
+    : shortResult.toFixed(2);
+
   calculationCompleted(shortResult.toString().split(""), key);
   showExpression();
 }
