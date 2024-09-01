@@ -28,3 +28,25 @@ buttons.addEventListener("click", getClickedTarget);
 function getClickedTarget(e) {
   keyHandler(e.target.getAttribute("data-key"));
 }
+
+function keyHandler(key) {
+  if (key === null || key === undefined) {
+    return;
+  }
+
+  if (key === "Backspace" || key === "Delete") {
+    deleteOperandsAndDisplayData();
+  }
+
+  if (key === "+/-") {
+    toggleParantheses();
+  }
+
+  if (key === "Clear") {
+    flushData();
+  }
+
+  let expression = new ExpressionHandler();
+  expression.update(key);
+  appendOperandsAndDisplayData();
+}
