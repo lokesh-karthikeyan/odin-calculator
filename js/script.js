@@ -247,3 +247,29 @@ function setDelimiters(expression) {
 function removeDelimiters(expression) {
   return expression.replaceAll(",", "");
 }
+
+function toggleParantheses() {
+  if (operator === "") {
+    if (negativeLeftOperand === null) {
+      operandOne = "-" + operandOne.slice(0);
+      return (negativeLeftOperand = "true");
+    }
+
+    if (negativeLeftOperand !== null) {
+      operandOne = operandOne.slice(1);
+      return (negativeLeftOperand = null);
+    }
+  }
+
+  if (operator !== "") {
+    if (negativeRightOperand === null) {
+      operandTwo = "-" + operandTwo.slice(0);
+      return (negativeRightOperand = "true");
+    }
+
+    if (negativeRightOperand !== null) {
+      operandTwo = operandTwo.slice(1);
+      return (negativeRightOperand = null);
+    }
+  }
+}
