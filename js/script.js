@@ -343,7 +343,6 @@ class ExpressionHandler {
         }
         return (operator = key);
       }
-
       return (operator = key);
     }
 
@@ -357,4 +356,42 @@ class ExpressionHandler {
       }
     }
   }
+}
+
+function hasNumbers(string) {
+  return string.match(/\d/) !== null;
+}
+
+function expressionConversion(key) {
+  let expressionOne = removeDelimiters(operandOne);
+  let expressionTwo = removeDelimiters(operandTwo);
+
+  if (operandOne.includes(".") || operandTwo.includes(".")) {
+    expressionOne = parseFloat(expressionOne);
+    expressionTwo = parseFloat(expressionTwo);
+  } else {
+    expressionOne = parseInt(expressionOne);
+    expressionTwo = parseInt(expressionTwo);
+  }
+
+  if (key === "%") {
+    if (operandOne !== "" && operandTwo === "") {
+      return Calculate.inPercentage(expressionOne).toString();
+    }
+    if (operandOne !== "" && operandTwo !== "") {
+      return Calculate.inPercentage(expressionTwo).toString();
+    }
+  }
+
+  let result = calculateExpressions(expressionOne, expressionTwo);
+
+  if (result === Infinity) result = "∞";
+  if (result === -Infinity) result = "-∞";
+  if (Number.isNaN(result)) result = "Err";
+
+  operandOne = result.toString();
+  operator = key !== "=" ? key : "";
+
+  if (negativeRightOperand !== null) negativeRightOperand = null;
+  operandTwo = "";
 }
