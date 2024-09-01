@@ -273,3 +273,88 @@ function toggleParantheses() {
     }
   }
 }
+
+class ExpressionHandler {
+  update(key) {
+    let validOperators = ["+", "-", "*", "/", "^", "%", "="];
+
+    if (validOperators.includes(key)) {
+      this.#updateOperator(key);
+    }
+
+    if (hasNumbers(key) || key === ".") {
+      this.#updateNumericValue(key);
+    }
+  }
+
+  #updateNumericValue(key) {
+    if (operator === "") {
+      if (operandOne.includes(".") && key === ".") return;
+      operandOne += key;
+    }
+
+    if (operator !== "") {
+      if (operandTwo.includes(".") && key === ".") return;
+      operandTwo += key;
+    }
+  }
+
+  #updateOperator(key) {
+    if (operandOne === "" && operator === "" && operandTwo === "") {
+      if (key !== "-") {
+        return (operator = "");
+      }
+
+      if (key === "-") {
+        negativeLeftOperand = "true";
+        return (operandOne += key);
+      }
+    }
+
+    if (operandOne !== "" && operator === "" && operandTwo === "") {
+      if (hasNumbers(operandOne) && key === "=") {
+        return (operator = "");
+      }
+
+      if (hasNumbers(operandOne) && key !== "%") {
+        return (operator = key);
+      }
+
+      if (hasNumbers(operandOne) && key === "%") {
+        operandOne = expressionConversion(key);
+        return (operator = "");
+      }
+    }
+
+    if (operandOne !== "" && operator !== "" && operandTwo === "") {
+      if (key === "=") {
+        return;
+      }
+
+      if (key === "%") {
+        operandOne = expressionConversion(key);
+        return (operator = "");
+      }
+
+      if (key === "-") {
+        if (operator === "-") {
+          negativeRightOperand = "true";
+          return (operandTwo += key);
+        }
+        return (operator = key);
+      }
+
+      return (operator = key);
+    }
+
+    if (operandOne !== "" && operator !== "" && operandTwo !== "") {
+      if (key !== "%" && hasNumbers(operandTwo)) {
+        expressionConversion(key);
+      }
+
+      if (key === "%" && hasNumbers(operandTwo)) {
+        operandTwo = expressionConversion(key);
+      }
+    }
+  }
+}
