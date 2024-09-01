@@ -395,3 +395,41 @@ function expressionConversion(key) {
   if (negativeRightOperand !== null) negativeRightOperand = null;
   operandTwo = "";
 }
+
+class Calculate {
+  static addition(operandOne, operandTwo) {
+    return Number(operandOne) + Number(operandTwo);
+  }
+
+  static subtraction(operandOne, operandTwo) {
+    return operandOne - operandTwo;
+  }
+
+  static multiplication(operandOne, operandTwo) {
+    return operandOne * operandTwo;
+  }
+
+  static division(dividend, divisor) {
+    return divisor !== 0 ? dividend / divisor : "Err";
+  }
+
+  static exponential(base, power) {
+    return base ** power;
+  }
+
+  static inPercentage(value) {
+    return (value * 1) / 100;
+  }
+}
+
+function calculateExpressions(expressionOne, expressionTwo) {
+  const mapCalculations = new Map([
+    ["+", Calculate.addition(expressionOne, expressionTwo)],
+    ["-", Calculate.subtraction(expressionOne, expressionTwo)],
+    ["*", Calculate.multiplication(expressionOne, expressionTwo)],
+    ["/", Calculate.division(expressionOne, expressionTwo)],
+    ["^", Calculate.exponential(expressionOne, expressionTwo)],
+  ]);
+
+  return mapCalculations.get(operator);
+}
