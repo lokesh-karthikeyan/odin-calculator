@@ -143,3 +143,36 @@ class IsNegative extends Display {
     }
   }
 }
+
+function appendOperandsAndDisplayData() {
+  operandOne = removeDelimiters(operandOne);
+  operandOne = checkDelimiters(operandOne);
+
+  operandTwo = removeDelimiters(operandTwo);
+  operandTwo = checkDelimiters(operandTwo);
+
+  let displayOperations = new Display(display);
+  let hasParanthesesDisplayOperations = new IsNegative(display);
+
+  if (negativeLeftOperand !== null || negativeRightOperand !== null) {
+    hasParanthesesDisplayOperations.update(operandOne, operator, operandTwo);
+    return;
+  }
+
+  displayOperations.update(operandOne, operator, operandTwo);
+}
+
+function deleteOperandsAndDisplayData() {
+  if (negativeLeftOperand !== null || negativeRightOperand !== null) {
+    hasParanthesesDisplayOperations.delete();
+    return;
+  }
+
+  displayOperations.delete();
+}
+
+function flushData() {
+  displayOperations.clear();
+  negativeLeftOperand = null;
+  negativeRightOperand = null;
+}
