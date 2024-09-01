@@ -50,3 +50,96 @@ function keyHandler(key) {
   expression.update(key);
   appendOperandsAndDisplayData();
 }
+
+class Display {
+  constructor(element) {
+    this.element = element;
+  }
+
+  update(leftExpression, operator, rightExpression) {
+    if (leftExpression === "" && operator === "" && rightExpression === "") {
+      this.element.textContent = "0";
+      return;
+    }
+    this.element.textContent =
+      leftExpression + " " + operator + " " + rightExpression;
+    return;
+  }
+
+  delete() {
+    if (operandTwo !== "") {
+      return (operandTwo = operandTwo.slice(0, length - 1));
+    }
+
+    if (operandTwo === "" && operator !== "") {
+      return (operator = operator.slice(0, length - 1));
+    }
+
+    if (operandOne !== "") {
+      return (operandOne = operandOne.slice(0, length - 1));
+    }
+  }
+
+  clear() {
+    operandOne = "";
+    operator = "";
+    operandTwo = "";
+  }
+}
+
+class IsNegative extends Display {
+  constructor(element) {
+    super(element);
+  }
+
+  update(leftExpression, operator, rightExpression) {
+    if (negativeLeftOperand !== null && negativeRightOperand !== null) {
+      this.element.textContent =
+        "(" +
+        leftExpression +
+        ")" +
+        " " +
+        operator +
+        " " +
+        "(" +
+        rightExpression +
+        ")";
+    }
+
+    if (negativeLeftOperand !== null && negativeRightOperand === null) {
+      this.element.textContent =
+        "(" + leftExpression + ")" + " " + operator + " " + rightExpression;
+    }
+
+    if (negativeLeftOperand === null && negativeRightOperand !== null) {
+      this.element.textContent =
+        leftExpression + " " + operator + " " + "(" + rightExpression + ")";
+    }
+  }
+
+  delete() {
+    if (operandTwo !== "") {
+      operandTwo = operandTwo.slice(0, length - 1);
+
+      if (operandTwo[operandTwo.length - 1] === "-") {
+        negativeRightOperand = null;
+        return (operandTwo = operandTwo.slice(0, length - 1));
+      }
+      return;
+    }
+
+    if (operandTwo === "" && operator !== "") {
+      return (operator = operator.slice(0, length - 1));
+    }
+
+    if (operandOne !== "") {
+      operandOne = operandOne.slice(0, length - 1);
+
+      if (operandOne[operandOne.length - 1] === "-") {
+        negativeLeftOperand = null;
+        return (operandOne = operandOne.slice(0, length - 1));
+      }
+      return;
+    }
+  }
+}
