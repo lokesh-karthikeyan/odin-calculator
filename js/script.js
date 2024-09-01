@@ -144,15 +144,15 @@ class IsNegative extends Display {
   }
 }
 
+let displayOperations = new Display(display);
+let hasParanthesesDisplayOperations = new IsNegative(display);
+
 function appendOperandsAndDisplayData() {
   operandOne = removeDelimiters(operandOne);
   operandOne = checkDelimiters(operandOne);
 
   operandTwo = removeDelimiters(operandTwo);
   operandTwo = checkDelimiters(operandTwo);
-
-  let displayOperations = new Display(display);
-  let hasParanthesesDisplayOperations = new IsNegative(display);
 
   if (negativeLeftOperand !== null || negativeRightOperand !== null) {
     hasParanthesesDisplayOperations.update(operandOne, operator, operandTwo);
@@ -175,4 +175,75 @@ function flushData() {
   displayOperations.clear();
   negativeLeftOperand = null;
   negativeRightOperand = null;
+}
+
+function checkDelimiters(expression) {
+  let length = expression.length;
+  let formattedExpression;
+
+  if (expression[length - 1] === ")") {
+    expression = expression.slice(1, length - 1);
+
+    if (expression.includes(".")) {
+      formattedExpression = separateExpressions(expression);
+      return "(" + formattedExpression + ")";
+    }
+
+    formattedExpression = setDelimiters(expression);
+    return "(" + formattedExpression + ")";
+  }
+
+  if (expression.includes(".") && !expression.includes("(")) {
+    formattedExpression = separateExpressions(expression);
+    return formattedExpression;
+  }
+
+  formattedExpression = setDelimiters(expression);
+  return formattedExpression;
+}
+
+function separateExpressions(expression) {
+  let index = expression.indexOf(".");
+  let integerExpression = expression.slice(0, index);
+  let fractionalExpression = expression.slice(index + 1);
+
+  let formattedIntegerExpression = setDelimiters(integerExpression);
+  let formattedFractionalExpression = setDelimiters(fractionalExpression);
+
+  return formattedIntegerExpression + "." + formattedFractionalExpression;
+}
+
+function setDelimiters(expression) {
+  let length = expression.length;
+
+  if (expression.includes("E")) {
+    length = expression.indexOf("E");
+  }
+
+  if (expression.includes("e")) {
+    length = expression.indexOf("e");
+  }
+
+  if (length > 3) {
+    if (expression[length - 4] !== "-")
+      expression =
+        expression.slice(0, length - 3) + "," + expression.slice(length - 3);
+  }
+
+  if (length > 5) {
+    let index = expression.indexOf(",");
+
+    while (index > 0) {
+      if (index - 2 <= 0) break;
+      if (expression[index - 3] === "-") break;
+      expression =
+        expression.slice(0, index - 2) + "," + expression.slice(index - 2);
+      index -= 2;
+    }
+  }
+  return expression;
+}
+
+function removeDelimiters(expression) {
+  return expression.replaceAll(",", "");
 }
