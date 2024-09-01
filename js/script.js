@@ -375,12 +375,15 @@ function expressionConversion(key) {
   }
 
   if (key === "%") {
+    let result;
+
     if (operandOne !== "" && operandTwo === "") {
-      return Calculate.inPercentage(expressionOne).toString();
+      result = Calculate.inPercentage(expressionOne).toFixed(2);
     }
     if (operandOne !== "" && operandTwo !== "") {
-      return Calculate.inPercentage(expressionTwo).toString();
+      result = Calculate.inPercentage(expressionTwo).toFixed(2);
     }
+    return result.toString();
   }
 
   let result = calculateExpressions(expressionOne, expressionTwo);
@@ -388,6 +391,7 @@ function expressionConversion(key) {
   if (result === Infinity) result = "∞";
   if (result === -Infinity) result = "-∞";
   if (Number.isNaN(result)) result = "Err";
+  if (String(result).includes(".")) result = result.toFixed(2);
 
   operandOne = result.toString();
   operator = key !== "=" ? key : "";
