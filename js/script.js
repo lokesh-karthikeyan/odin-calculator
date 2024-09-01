@@ -290,6 +290,10 @@ class ExpressionHandler {
   #updateNumericValue(key) {
     if (operator === "") {
       if (operandOne.includes(".") && key === ".") return;
+      if (operandOne === "Err" || operandOne === "∞" || operandOne === "-∞") {
+        operandOne = "";
+        if (negativeLeftOperand !== null) negativeLeftOperand = null;
+      }
       operandOne += key;
     }
 
@@ -395,6 +399,8 @@ function expressionConversion(key) {
 
   operandOne = result.toString();
   operator = key !== "=" ? key : "";
+
+  if (result === "∞" || result === "-∞" || result === "Err") operator = "";
 
   if (negativeRightOperand !== null) negativeRightOperand = null;
   operandTwo = "";
