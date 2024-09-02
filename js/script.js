@@ -5,7 +5,16 @@ let negativeLeftOperand = null;
 let negativeRightOperand = null;
 let display = document.querySelector(".display h2");
 
+/*******************************************************************************
+ * Event Listener's objective: "DOMContentLoaded" event is to do some          *
+ * actions as soon as page is loaded.                                          *
+ *******************************************************************************/
+
 document.addEventListener("DOMContentLoaded", sayGreeting);
+
+/*********************************************************************************
+ * Function objective: To say greeting and it will revert back in 600ms.         *
+ *********************************************************************************/
 
 function sayGreeting() {
   display.textContent = "Hello!";
@@ -15,19 +24,43 @@ function sayGreeting() {
   }, 600);
 }
 
+/************************************************************************************
+ * Event Listener's objective: This is a "keydown" event which adds support         *
+ * for the keyboard in the site.                                                    *
+ ************************************************************************************/
+
 document.addEventListener("keydown", getPressedTarget);
+
+/*****************************************************************************
+ * Function objective: Helper function -> which passes the pressed key.      *
+ *****************************************************************************/
 
 function getPressedTarget(e) {
   keyHandler(e.key);
 }
 
+/********************************************************************************************
+ * Event Listener's objective: Used Event delegation (click) to target the contents         *
+ * inside the container.                                                                    *
+ ********************************************************************************************/
+
 let buttons = document.querySelector(".calc-buttons");
 
 buttons.addEventListener("click", getClickedTarget);
 
+/*******************************************************************************
+ * Function objective: Helper function -> which passes the clicked target's    *
+ * HTML data-key's attribute value.                                            *
+ *******************************************************************************/
+
 function getClickedTarget(e) {
   keyHandler(e.target.getAttribute("data-key"));
 }
+
+/*****************************************************************************
+ * Function objective: Helper function -> Central key handling function      *
+ * where it calls the proper functions / methods based on the target keys.   *
+ *****************************************************************************/
 
 function keyHandler(key) {
   if (key === null || key === undefined) {
@@ -50,6 +83,11 @@ function keyHandler(key) {
   expression.update(key);
   appendOperandsAndDisplayData();
 }
+
+/*****************************************************************************
+ * Class's objective: It is to update, or delete, or wipe the data of        *
+ * the operands & operators and also show the changes in display UI.         *
+ *****************************************************************************/
 
 class Display {
   constructor(element) {
@@ -86,6 +124,12 @@ class Display {
     operandTwo = "";
   }
 }
+
+/*****************************************************************************
+ * Class's objective: Sub Class -> It is to update, or delete the data of    *
+ * the operands & operators and also show the changes in display UI.         *
+ * This is for the "Parantheses" based value's methods.                      *
+ *****************************************************************************/
 
 class IsNegative extends Display {
   constructor(element) {
@@ -150,8 +194,16 @@ class IsNegative extends Display {
   }
 }
 
+// Instance of the above classes.
+
 let displayOperations = new Display(display);
 let hasParanthesesDisplayOperations = new IsNegative(display);
+
+/*********************************************************************************
+ * Function objective: Helper function -> Removes & re-adds the "," comma        *
+ * delimiters. Then, calls proper class's methods based on the scenarios to      *
+ * update the Display UI.                                                        *
+ *********************************************************************************/
 
 function appendOperandsAndDisplayData() {
   operandOne = removeDelimiters(operandOne);
@@ -168,6 +220,11 @@ function appendOperandsAndDisplayData() {
   displayOperations.update(operandOne, operator, operandTwo);
 }
 
+/********************************************************************************
+ * Function objective: Helper function -> Calls the proper class's methods      *
+ * to delete the operands & operators & also update the HTML element.           *
+ ********************************************************************************/
+
 function deleteOperandsAndDisplayData() {
   if (negativeLeftOperand !== null || negativeRightOperand !== null) {
     hasParanthesesDisplayOperations.delete();
@@ -177,11 +234,21 @@ function deleteOperandsAndDisplayData() {
   displayOperations.delete();
 }
 
+/********************************************************************************
+ * Function objective: Helper function -> Calls the proper class's methods      *
+ * to wipe clean the operands & operators & also removes any parantheses.       *
+ ********************************************************************************/
+
 function flushData() {
   displayOperations.clear();
   negativeLeftOperand = null;
   negativeRightOperand = null;
 }
+
+/********************************************************************************
+ * Function objective: Helper function -> Checks the expressions if there's     *
+ * parantheses & period and calls proper functions based on that info.          *
+ ********************************************************************************/
 
 function checkDelimiters(expression) {
   let length = expression.length;
@@ -208,6 +275,11 @@ function checkDelimiters(expression) {
   return formattedExpression;
 }
 
+/********************************************************************************
+ * Function objective: Helper function -> It just separates the integer &       *
+ * fractional part of the decimal, and after processed it will then joins.      *
+ ********************************************************************************/
+
 function separateExpressions(expression) {
   let index = expression.indexOf(".");
   let integerExpression = expression.slice(0, index);
@@ -218,6 +290,11 @@ function separateExpressions(expression) {
 
   return formattedIntegerExpression + "." + formattedFractionalExpression;
 }
+
+/*****************************************************************************
+ * Function objective: It sets the "," Comma delimiters looping through      *
+ * the expression.                                                           *
+ *****************************************************************************/
 
 function setDelimiters(expression) {
   let length = expression.length;
@@ -250,9 +327,18 @@ function setDelimiters(expression) {
   return expression;
 }
 
+/*****************************************************************************
+ * Function objective: Removes the "," Commas from the expression.           *
+ *****************************************************************************/
+
 function removeDelimiters(expression) {
   return expression.replaceAll(",", "");
 }
+
+/**********************************************************************************
+ * Function objective: It acts like a toggler which adds & removes parantheses.   *
+ * It also adds "-" minus sign if necessary.                                      *
+ **********************************************************************************/
 
 function toggleParantheses() {
   if (operator === "") {
@@ -281,6 +367,12 @@ function toggleParantheses() {
     }
   }
 }
+
+/*********************************************************************************
+ * Class's objective: It has a single public method & the rest all are private.  *
+ * The public method decides if it's numeric (or) operators & calls the          *
+ * proper private method to append values to the operands & operators.           *
+ *********************************************************************************/
 
 class ExpressionHandler {
   update(key) {
@@ -370,9 +462,19 @@ class ExpressionHandler {
   }
 }
 
+/***********************************************************************************
+ * Function objective: It checks if the string (or) character has any numbers.     *
+ ***********************************************************************************/
+
 function hasNumbers(string) {
   return string.match(/\d/) !== null;
 }
+
+/*********************************************************************************
+ * Function objective: It prepares the operands for calculation by removing      *
+ * delimiters & parses based on the operands value such as float, number, int.   *
+ * It then updates the operands & operators values.                              *
+ *********************************************************************************/
 
 function expressionConversion(key) {
   let expressionOne = removeDelimiters(operandOne);
@@ -418,6 +520,11 @@ function expressionConversion(key) {
   operandTwo = "";
 }
 
+/**********************************************************************************
+ * Class's objective: It contains all the methods as static. These static         *
+ * methods contains calculation formulas which calculates & returns the result.   *
+ **********************************************************************************/
+
 class Calculate {
   static addition(operandOne, operandTwo) {
     return Number(operandOne) + Number(operandTwo);
@@ -443,6 +550,11 @@ class Calculate {
     return (value * 1) / 100;
   }
 }
+
+/***********************************************************************************
+ * Function objective: Helper function -> Calls the appropriate method based       *
+ * on the current value of the operator & returns the result.                      *
+ ***********************************************************************************/
 
 function calculateExpressions(expressionOne, expressionTwo) {
   const mapCalculations = new Map([
