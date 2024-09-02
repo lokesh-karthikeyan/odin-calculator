@@ -72,7 +72,7 @@ function keyHandler(key) {
   }
 
   if (key === "+/-") {
-    toggleParantheses();
+    toggleParentheses();
   }
 
   if (key === "Clear") {
@@ -128,7 +128,7 @@ class Display {
 /*****************************************************************************
  * Class's objective: Sub Class -> It is to update, or delete the data of    *
  * the operands & operators and also show the changes in display UI.         *
- * This is for the "Parantheses" based value's methods.                      *
+ * This is for the "Parentheses" based value's methods.                      *
  *****************************************************************************/
 
 class IsNegative extends Display {
@@ -197,7 +197,7 @@ class IsNegative extends Display {
 // Instance of the above classes.
 
 let displayOperations = new Display(display);
-let hasParanthesesDisplayOperations = new IsNegative(display);
+let hasParenthesesDisplayOperations = new IsNegative(display);
 
 /*********************************************************************************
  * Function objective: Helper function -> Removes & re-adds the "," comma        *
@@ -213,7 +213,7 @@ function appendOperandsAndDisplayData() {
   operandTwo = checkDelimiters(operandTwo);
 
   if (negativeLeftOperand !== null || negativeRightOperand !== null) {
-    hasParanthesesDisplayOperations.update(operandOne, operator, operandTwo);
+    hasParenthesesDisplayOperations.update(operandOne, operator, operandTwo);
     return;
   }
 
@@ -227,7 +227,7 @@ function appendOperandsAndDisplayData() {
 
 function deleteOperandsAndDisplayData() {
   if (negativeLeftOperand !== null || negativeRightOperand !== null) {
-    hasParanthesesDisplayOperations.delete();
+    hasParenthesesDisplayOperations.delete();
     return;
   }
 
@@ -236,7 +236,7 @@ function deleteOperandsAndDisplayData() {
 
 /********************************************************************************
  * Function objective: Helper function -> Calls the proper class's methods      *
- * to wipe clean the operands & operators & also removes any parantheses.       *
+ * to wipe clean the operands & operators & also removes any parentheses.       *
  ********************************************************************************/
 
 function flushData() {
@@ -247,7 +247,7 @@ function flushData() {
 
 /********************************************************************************
  * Function objective: Helper function -> Checks the expressions if there's     *
- * parantheses & period and calls proper functions based on that info.          *
+ * parentheses & period and calls proper functions based on that info.          *
  ********************************************************************************/
 
 function checkDelimiters(expression) {
@@ -336,11 +336,11 @@ function removeDelimiters(expression) {
 }
 
 /**********************************************************************************
- * Function objective: It acts like a toggler which adds & removes parantheses.   *
+ * Function objective: It acts like a toggler which adds & removes parentheses.   *
  * It also adds "-" minus sign if necessary.                                      *
  **********************************************************************************/
 
-function toggleParantheses() {
+function toggleParentheses() {
   if (operator === "") {
     if (negativeLeftOperand === null) {
       if (operandOne === "Err" || operandOne === "∞" || operandOne === "-∞")
