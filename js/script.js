@@ -373,6 +373,9 @@ function expressionConversion(key) {
   if (operandOne.includes(".") || operandTwo.includes(".")) {
     expressionOne = parseFloat(expressionOne);
     expressionTwo = parseFloat(expressionTwo);
+  } else if (operandOne.includes("e") || operandTwo.includes("e")) {
+    expressionOne = Number(expressionOne);
+    expressionTwo = Number(expressionTwo);
   } else {
     expressionOne = parseInt(expressionOne);
     expressionTwo = parseInt(expressionTwo);
