@@ -121,6 +121,9 @@ class IsNegative extends Display {
     if (operandTwo !== "") {
       operandTwo = operandTwo.slice(0, length - 1);
 
+      if (operandTwo.length === 0 && negativeRightOperand !== null)
+        negativeRightOperand = null;
+
       if (operandTwo[operandTwo.length - 1] === "-") {
         negativeRightOperand = null;
         return (operandTwo = operandTwo.slice(0, length - 1));
@@ -134,6 +137,9 @@ class IsNegative extends Display {
 
     if (operandOne !== "") {
       operandOne = operandOne.slice(0, length - 1);
+
+      if (operandOne.length === 0 && negativeLeftOperand !== null)
+        negativeLeftOperand = null;
 
       if (operandOne[operandOne.length - 1] === "-") {
         negativeLeftOperand = null;
@@ -251,7 +257,7 @@ function removeDelimiters(expression) {
 function toggleParantheses() {
   if (operator === "") {
     if (negativeLeftOperand === null) {
-      operandOne = "-" + operandOne.slice(0);
+      if (operandOne[0] !== "-") operandOne = "-" + operandOne.slice(0);
       return (negativeLeftOperand = "true");
     }
 
@@ -399,6 +405,7 @@ function expressionConversion(key) {
   if (result === -Infinity) result = "-∞";
   if (Number.isNaN(result)) result = "Err";
   if (String(result).includes(".")) result = result.toFixed(2);
+  if (!String(result).includes("-")) negativeLeftOperand = null;
 
   operandOne = result.toString();
   operator = key !== "=" ? key : "";
