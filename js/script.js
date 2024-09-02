@@ -257,6 +257,8 @@ function removeDelimiters(expression) {
 function toggleParantheses() {
   if (operator === "") {
     if (negativeLeftOperand === null) {
+      if (operandOne === "Err" || operandOne === "∞" || operandOne === "-∞")
+        return;
       if (operandOne[0] !== "-") operandOne = "-" + operandOne.slice(0);
       return (negativeLeftOperand = "true");
     }
