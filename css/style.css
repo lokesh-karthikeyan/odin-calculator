@@ -63,11 +63,11 @@ body {
   background-color: hsla(112, 32%, 46%, 1);
   width: 95%;
   margin: 20px auto;
-  direction: rtl;
   font-size: 1.5rem;
   padding: 10px;
   border: ridge 10px hsl(0, 0%, 0%);
   overflow: hidden;
+  text-align: end;
 }
 
 .display h2 {
