@@ -60,7 +60,7 @@ body {
 /**------ WRAPPER'S CONTENTS [SECTION - 02] ------**/
 
 .display {
-  background-color: hsla(112, 21%, 46%, 1);
+  background-color: hsla(112, 32%, 46%, 1);
   width: 95%;
   margin: 20px auto;
   direction: rtl;
@@ -112,12 +112,14 @@ body {
 
 .rows button {
   border: none;
-  background-color: hsl(255, 2.38%, 67.06%);
+  background-color: hsla(30, 3%, 85%, 1);
   padding: 25px;
   font-family: "Lato", Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bolder;
   font-size: 1rem;
   min-width: 30px;
+  transition: all .4s ease-in-out;
+  border-radius: 5px;
 }
 
 .rows .column-2 {
@@ -126,8 +128,17 @@ body {
 
 /****------ MAIN'S CONTENTS [NUMBERS CONTAINER] ------****/
 
+.rows button[data-key="Delete"] {
+  background-color: hsla(23, 88%, 61%, 1);
+}
+
+.rows button[data-key="."] {
+  background-color: hsla(56, 88%, 61%, 1);
+}
+
 .numbers-container {
   flex-wrap: wrap;
+  flex-basis: 120%;
 }
 
 .numbers-container>*,
@@ -148,6 +159,24 @@ body {
 }
 
 /****------ MAIN'S CONTENTS [SIGNS CONTAINER] ------****/
+
+.rows button[data-key="="] {
+  background-color: hsla(118, 76%, 72%, 1);
+}
+
+.rows button[data-key="Clear"] {
+  background-color: hsla(0, 76%, 64%, 1);
+}
+
+.rows button[data-key="+"],
+.rows button[data-key="-"],
+.rows button[data-key="*"],
+.rows button[data-key="/"],
+.rows button[data-key="%"],
+.rows button[data-key="^"],
+.rows button[data-key="+/-"] {
+  background-color: hsla(215, 88%, 61%, 1);
+}
 
 .signs-container,
 .signs-column,
@@ -178,7 +207,6 @@ body {
 }
 
 .signs-container {
-  flex-basis: 30%;
   border-left: ridge .5rem hsl(0, 0%, 0%);
 }
 
@@ -195,4 +223,37 @@ body {
   letter-spacing: 5px;
   font-weight: bolder;
   font-size: .9rem;
+}
+
+/**------ HOVER OVER RULES ------**/
+
+.rows button:hover {
+  transform: scale(0.9);
+  box-shadow: 0 0 15px hsla(30, 3%, 85%, 1);
+}
+
+.rows button[data-key="Delete"]:hover {
+  box-shadow: 0 0 15px hsla(23, 88%, 61%, 1);
+}
+
+.rows button[data-key="="]:hover {
+  box-shadow: 0 0 15px hsla(118, 76%, 72%, 1);
+}
+
+.rows button[data-key="."]:hover {
+  box-shadow: 0 0 15px hsla(56, 88%, 61%, 1);
+}
+
+.rows button[data-key="Clear"]:hover {
+  box-shadow: 0 0 15px hsla(0, 76%, 64%, 1);
+}
+
+.rows button[data-key="+"]:hover,
+.rows button[data-key="-"]:hover,
+.rows button[data-key="*"]:hover,
+.rows button[data-key="/"]:hover,
+.rows button[data-key="%"]:hover,
+.rows button[data-key="^"]:hover,
+.rows button[data-key="+/-"]:hover {
+  box-shadow: 0 0 15px hsla(215, 88%, 61%, 1);
 }
