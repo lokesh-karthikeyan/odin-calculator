@@ -26,7 +26,7 @@ html {
 body {
   background-color: hsl(40, 5.45%, 10.78%);
   min-height: 100vh;
-  max-width: 800px;
+  max-width: 550px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -53,6 +53,7 @@ body {
   color: transparent;
   text-align: center;
   letter-spacing: 10px;
+  margin: 20px auto;
 }
 
 /**------ WRAPPER'S CONTENTS [SECTION - 02] ------**/
@@ -101,6 +102,7 @@ body {
   font-family: "Lato", Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bolder;
   font-size: 1rem;
+  min-width: 30px;
 }
 
 .rows .column-2 {
@@ -158,6 +160,10 @@ body {
 
 .signs-column.column-2 button {
   letter-spacing: 10px;
+}
+
+.signs-container {
+  flex-basis: 30%;
 }
 
 /**------ WRAPPER'S CONTENTS [FOOTER] ------**/
