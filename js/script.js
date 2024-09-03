@@ -114,6 +114,7 @@ class Display {
     }
 
     if (operandOne !== "") {
+      if (operandOne === "Err") return (operandOne = "");
       return (operandOne = operandOne.slice(0, length - 1));
     }
   }
