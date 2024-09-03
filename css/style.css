@@ -120,6 +120,7 @@ body {
   min-width: 30px;
   transition: all .4s ease-in-out;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .rows .column-2 {
